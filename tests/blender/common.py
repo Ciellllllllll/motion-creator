@@ -75,3 +75,34 @@ def action_signature(action):
     for fc in rt.action_fcurves(action) or []:
         out.append((fc.data_path, fc.array_index, tuple(round(k.co[1], 6) for k in fc.keyframe_points)))
     return sorted(out)
+
+
+class FakeClient:
+    """記録済みの応答を返す偽のサーバー。呼び出しを calls に残す。"""
+
+    def __init__(self):
+        self.data = json.loads((DATA / "samples.json").read_text(encoding="utf-8"))
+        self.calls = []
+
+    def skeleton(self):
+        return skeleton()
+
+    def sample(self, clip, time_s, anchor, placement, static=False):
+        self.calls.append({"clip": clip, "time": time_s, "anchor": anchor,
+                           "placement": list(placement), "static": static})
+        if static:
+            return json.loads(json.dumps(self.data["stand.bvh|static"]))
+        key = f"{clip}|{anchor}|{time_s:.2f}"
+        if key not in self.data:
+            key = next(k for k in self.data if k.startswith(f"{clip}|{anchor}|"))
+        return json.loads(json.dumps(self.data[key]))
+
+
+def start_fake(scene=None):
+    """サーバーなしで「起動後」の状態にする。"""
+    import bpy
+    from motionbricks_blender import poses
+    fake = FakeClient()
+    poses.set_client_factory(lambda: fake)
+    poses.on_server_started(scene or bpy.context.scene, skeleton())
+    return fake

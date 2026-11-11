@@ -1,15 +1,18 @@
 """MotionBricks を Blender の中で使うアドオン。"""
 
-try:
-    import bpy  # noqa: F401
-    _IN_BLENDER = True
-except ImportError:  # 純 Python のテストから読み込まれた場合
-    _IN_BLENDER = False
+_MODULE_NAMES = ("poses",)
+
+
+def _modules():
+    import importlib
+    return [importlib.import_module(f".{name}", __name__) for name in _MODULE_NAMES]
 
 
 def register():
-    pass
+    for module in _modules():
+        module.register()
 
 
 def unregister():
-    pass
+    for module in reversed(_modules()):
+        module.unregister()

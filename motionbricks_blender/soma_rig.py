@@ -146,8 +146,9 @@ def pose_bases(arm, pose, world_inv=None) -> dict:
     return out
 
 
-def apply_pose(arm, pose) -> None:
-    bases = pose_bases(arm, pose)
+def apply_pose(arm, pose, local: bool = False) -> None:
+    """*local* が真なら、*pose* はアーマチュアのローカル座標での姿勢。"""
+    bases = pose_bases(arm, pose, Matrix.Identity(4) if local else None)
     for pb in arm.pose.bones:
         b = bases.get(pb.name)
         if b is None:

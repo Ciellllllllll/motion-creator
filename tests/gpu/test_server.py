@@ -85,6 +85,13 @@ def test_fk_matches_rest_height(server, skel):
         pose = server.sample(clip, t, 0, place)[0]
         cases.append({"pose": pose, "world": server.fk(pose)})
     (DATA / "fk_expected.json").write_text(json.dumps({"cases": cases}), encoding="utf-8")
+    samples = {}
+    for clip, times in (("stand.bvh", (2.0,)), ("walk.bvh", (2.5, 1.0)), ("crouch.bvh", (3.0,))):
+        for anchor in (0, 3):
+            for t in times:
+                samples[f"{clip}|{anchor}|{t:.2f}"] = server.sample(clip, t, anchor, [0, 0, -math.pi / 2])
+    samples["stand.bvh|static"] = server.sample("stand.bvh", 2.0, 0, [0, 0, -math.pi / 2], static=True)
+    (DATA / "samples.json").write_text(json.dumps(samples), encoding="utf-8")
     ctx = server.sample("walk.bvh", 1.0, 3, [0, 0, -math.pi / 2])
     tgt = server.sample("walk.bvh", 3.0, 0, [0, -1.8, -math.pi / 2])
     r = server.generate(ctx, [{"poses": tgt, "use": 4, "early": 0}], None)
