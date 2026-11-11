@@ -158,6 +158,7 @@ def export_fbx(context, scene, filepath: str):
     prev_active = view_layer.objects.active
     prev_selected = [o for o in view_layer.objects if o.select_get()]
     prev_range = (scene.frame_start, scene.frame_end, scene.frame_current)
+    prev_scene_name = scene.name
     members = [char] + ([o for o in character_objects(scene) if o.type == 'MESH']
                         if mb.export_mode == 'BAKE' else [])
     hidden = [(o, o.hide_get(), o.hide_viewport) for o in members]
@@ -178,6 +179,8 @@ def export_fbx(context, scene, filepath: str):
                 kp.handle_right.x -= frames[0]
             fc.update()
         scene.frame_start, scene.frame_end = 0, frames[-1] - frames[0]
+        # FBX のクリップ名にはシーン名が使われる。ファイル名と同じにしておく
+        scene.name = os.path.splitext(os.path.basename(filepath))[0] or "MotionBricks"
         scene.render.fps, scene.render.fps_base = 30, 1.0
         for obj in view_layer.objects:
             obj.select_set(False)
@@ -195,6 +198,7 @@ def export_fbx(context, scene, filepath: str):
             axis_forward='-Z', axis_up='Y', apply_scale_options='FBX_SCALE_ALL',
         )
     finally:
+        scene.name = prev_scene_name
         rt.bind_action(char, action)
         bpy.data.actions.remove(temp)
         for obj, was_hidden, was_disabled in hidden:

@@ -24,7 +24,7 @@ CLIPS = [
     ("run", "走り", "A person runs forward fast.", 4.0, 14, 2.0),
     ("crouch", "しゃがみ", "A person crouches down low and stays crouched.", 4.0, 15, 3.0),
     ("crouch_walk", "しゃがみ歩き", "A person walks forward while crouching low.", 5.0, 16, 2.5),
-    ("jump", "ジャンプ", "A person jumps straight up in place and lands.", 4.0, 17, 2.0),
+    ("jump", "ジャンプ", "A person jumps straight up in place and lands.", 4.0, 17, 1.2),
     ("sit", "座る", "A person sits down on a chair and stays seated.", 5.0, 18, 4.0),
     ("wave", "手を振る", "A person stands and waves with the right hand.", 4.0, 19, 2.0),
     ("turn", "振り返る", "A person standing turns around to face the opposite direction.", 4.0, 20, 2.0),

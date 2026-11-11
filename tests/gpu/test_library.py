@@ -30,7 +30,7 @@ def test_all_clips_load(server, skel):
         assert len(poses) == 4 and len(poses[0]) == 77
         flat = [v for p in poses for j in p for v in j]
         assert all(math.isfinite(v) for v in flat)
-        assert 0.3 < poses[0][0][2] < 1.2, i["name"]     # 腰の高さが妥当
+        assert 0.3 < poses[0][0][2] < 1.7, i["name"]     # 腰の高さが妥当（ジャンプの頂点は約 1.5 m）
 
 
 def _facing(server, skel, pose):

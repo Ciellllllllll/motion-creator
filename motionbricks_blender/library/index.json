@@ -82,7 +82,7 @@
    "name": "ジャンプ",
    "file": "jump.bvh",
    "duration": 3.9667,
-   "default_time": 2.0,
+   "default_time": 1.2,
    "static": false,
    "prompt": "A person jumps straight up in place and lands.",
    "seed": 17,

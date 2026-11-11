@@ -200,3 +200,16 @@ def test_not_mixamo_cleanup():
     assert "Mixamo" in mb.error and any(ord(ch) > 0x3000 for ch in mb.error)
     assert len(bpy.data.objects) == n
     assert export.character_armature(scene) is None
+
+
+def test_clip_is_named_after_the_file():
+    """ゲームエンジンで見えるクリップ名は、保存したファイル名にする（既定だと "Scene" になる）。"""
+    mb = _generated(walk_far=False)
+    scene_name = bpy.context.scene.name
+    path = _out("Hero_Wave.fbx")
+    assert bpy.ops.mb.export(filepath=path) == {'FINISHED'}, mb.error
+    assert bpy.context.scene.name == scene_name                 # シーン名は元に戻す
+    data = open(path, "rb").read()
+    assert b"Hero_Wave" in data and b"AnimStack::Scene" not in data
+    arm, _ = _reimport(path)
+    assert "Hero_Wave" in arm.animation_data.action.name
