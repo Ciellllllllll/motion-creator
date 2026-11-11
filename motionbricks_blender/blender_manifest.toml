@@ -1,0 +1,12 @@
+schema_version = "1.0.0"
+id = "motionbricks_blender"
+version = "0.1.0"
+name = "MotionBricks"
+tagline = "ポーズを置いて動きを生成し、Mixamo形式で保存"
+maintainer = "Ciel"
+type = "add-on"
+blender_version_min = "4.2.0"
+license = ["SPDX:Apache-2.0"]
+[permissions]
+network = "初回のみ MotionBricks を取得します"
+files = "モデルの保存と FBX の書き出し"

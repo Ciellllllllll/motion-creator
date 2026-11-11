@@ -1,0 +1,13 @@
+[project]
+name = "motionbricks-blender-dev"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["gpu", "blender", "data", "out"]
+pythonpath = ["."]
