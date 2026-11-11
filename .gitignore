@@ -1,0 +1,7 @@
+.superpowers/
+__pycache__/
+.venv/
+*.pyc
+tests/data/player_mixamo_repaired.fbx
+tests/out/
+.pytest_cache/
