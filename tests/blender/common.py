@@ -106,3 +106,36 @@ def start_fake(scene=None):
     poses.set_client_factory(lambda: fake)
     poses.on_server_started(scene or bpy.context.scene, skeleton())
     return fake
+
+
+_real = {"proc": None, "port": None}
+
+
+def start_real(scene=None):
+    """本物のサーバーを（1 回だけ）起動して「起動後」の状態にする。"""
+    import bpy
+    from motionbricks_blender import client, poses
+    if _real["proc"] is None or _real["proc"].poll() is not None:
+        _real["proc"], _real["port"] = client.start_server()
+    port = _real["port"]
+    poses.set_client_factory(lambda: client.Client(port))
+    poses.on_server_started(scene or bpy.context.scene, client.Client(port).skeleton())
+    return client.Client(port)
+
+
+def stop_real():
+    from motionbricks_blender import client, poses
+    poses.set_client_factory(None)
+    if _real["proc"] is not None:
+        try:
+            client.Client(_real["port"]).shutdown()
+            _real["proc"].wait(timeout=15)
+        except Exception:
+            client.kill_tree(_real["proc"])
+        _real["proc"] = None
+
+
+def kill_real():
+    from motionbricks_blender import client
+    client.kill_tree(_real["proc"])
+    _real["proc"].wait(timeout=15)

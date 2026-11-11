@@ -41,6 +41,8 @@ def main():
                         module.teardown()
                     except Exception:
                         traceback.print_exc()
+        if hasattr(module, "teardown_module"):
+            module.teardown_module()
     except BaseException:
         traceback.print_exc()
         failed.append("<import>")

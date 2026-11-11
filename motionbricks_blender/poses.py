@@ -157,7 +157,9 @@ def _on_index_changed(self, context):
     try:
         if context.mode != 'OBJECT':
             return
-        arm.hide_set(False)
+        for entry in self.poses:          # 生成後に隠した人形を出し直す
+            if entry.armature is not None and entry.armature.name in context.view_layer.objects:
+                entry.armature.hide_set(False)
         for obj in context.view_layer.objects:
             obj.select_set(obj == arm)
         context.view_layer.objects.active = arm
