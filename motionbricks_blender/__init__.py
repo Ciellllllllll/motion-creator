@@ -1,6 +1,6 @@
 """MotionBricks を Blender の中で使うアドオン。"""
 
-_MODULE_NAMES = ("poses", "limb_edit", "export", "generate")
+_MODULE_NAMES = ("poses", "limb_edit", "export", "generate", "ui")
 
 
 def _modules():

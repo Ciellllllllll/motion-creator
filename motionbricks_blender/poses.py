@@ -148,8 +148,18 @@ def _safe_refresh(entry, context):
         context.scene.mb.error = str(e)
 
 
+def set_index_quietly(mb, index):
+    """3D ビュー側の選択に合わせるとき用：選択し直しを起こさずに一覧の位置だけ変える。"""
+    global _muted
+    _muted = True
+    try:
+        mb.index = index
+    finally:
+        _muted = False
+
+
 def _on_index_changed(self, context):
-    if not (0 <= self.index < len(self.poses)):
+    if _muted or not (0 <= self.index < len(self.poses)):
         return
     arm = self.poses[self.index].armature
     if arm is None or arm.name not in context.view_layer.objects:
