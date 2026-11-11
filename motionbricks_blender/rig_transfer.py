@@ -835,3 +835,74 @@ def transfer_to_mixamo(context, source, target, action_name="Kimodo_Mixamo"):
     write_bases(target, action, frames, bases, transfer.mapped_bones, root_bones=(transfer.tgt_root,))
     action.use_fake_user = True
     return action, len(transfer.mapping), warnings
+
+
+# ---------------------------------------------------------------------------
+# MotionBricks（SOMA 77 関節）⇔ Mixamo
+# ---------------------------------------------------------------------------
+
+_FINGER_WORDS = ("Thumb", "Index", "Middle", "Ring", "Pinky")
+
+
+class NotMixamoError(ValueError):
+    """Mixamo の骨格ではない（利用者に見せる日本語のメッセージ）。"""
+
+
+def _is_finger(name):
+    return any(w in name for w in _FINGER_WORDS)
+
+
+def mb_to_mixamo(source_arm, mixamo_arm):
+    """MotionBricks の SOMA 骨格 → Mixamo 骨格の RigTransfer。
+
+    指は転送しない（Mixamo 側の基本姿勢のまま）。手の向きの基準を測るために
+    指の対応を使った後、対応表から外す。
+    """
+    if detect_mixamo_prefix(mixamo_arm) is None:
+        raise NotMixamoError(f"「{mixamo_arm.name}」はMixamoのキャラクターではありません")
+    transfer = mixamo_transfer(source_arm, mixamo_arm)
+    for name in [t for t in transfer.mapping if _is_finger(t)]:
+        del transfer.mapping[name]
+    return transfer
+
+
+def mixamo_from_mb(mixamo_arm, source_arm):
+    """Mixamo 骨格 → SOMA 骨格（往復誤差の確認用）。"""
+    if detect_mixamo_prefix(mixamo_arm) is None:
+        raise NotMixamoError(f"「{mixamo_arm.name}」はMixamoのキャラクターではありません")
+    transfer = soma_from_mixamo_transfer(mixamo_arm, source_arm)
+    for name in [t for t in transfer.mapping if _is_finger(t)]:
+        del transfer.mapping[name]
+    return transfer
+
+
+def _bake(transfer, source_arm, target_arm, action_name):
+    src_action = source_arm.animation_data.action if source_arm.animation_data else None
+    if src_action is None:
+        raise ValueError("転送する動きがありません")
+    f_start, f_end = src_action.frame_range
+    frames = list(range(int(round(f_start)), int(round(f_end)) + 1))
+    bases = sample_transfer(transfer, src_action, frames)
+    old = target_arm.animation_data.action if target_arm.animation_data else None
+    if old is not None:
+        old.use_fake_user = True   # 元の動きは消さない
+    for pb in target_arm.pose.bones:
+        if pb.name in transfer.mapping:
+            pb.rotation_mode = 'QUATERNION'
+    reset_unmapped_pose(target_arm, transfer.mapping)
+    action, _, _ = _new_action_for(target_arm, action_name)
+    write_bases(target_arm, action, frames, bases, transfer.mapped_bones, root_bones=(transfer.tgt_root,))
+    action.use_fake_user = True
+    return action
+
+
+def transfer_action(source_arm, mixamo_arm, action_name: str):
+    """*source_arm* の動きを Mixamo キャラクターの新しいアクションに焼き込む。"""
+    action = _bake(mb_to_mixamo(source_arm, mixamo_arm), source_arm, mixamo_arm, action_name)
+    action["mb_source"] = source_arm.name
+    return action
+
+
+def transfer_back(mixamo_arm, source_arm, action_name: str):
+    """Mixamo キャラクターの動きを SOMA 骨格へ戻す（確認用）。"""
+    return _bake(mixamo_from_mb(mixamo_arm, source_arm), mixamo_arm, source_arm, action_name)

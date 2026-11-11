@@ -45,3 +45,33 @@ def world_heads(arm):
     import bpy
     bpy.context.view_layer.update()
     return {pb.name: arm.matrix_world @ pb.head for pb in arm.pose.bones}
+
+
+def character_path():
+    path = DATA / "player_mixamo_repaired.fbx"
+    assert path.is_file(), f"テスト用キャラクターを置いてください: {path}"
+    return path
+
+
+def load_character(path=None):
+    """Mixamo キャラクターの FBX を読み込み、アーマチュアを返す。"""
+    import bpy
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.fbx(filepath=str(path or character_path()))
+    new = [o for o in bpy.data.objects if o not in before]
+    return next(o for o in new if o.type == "ARMATURE")
+
+
+def soma_with_walk(name="MB_src"):
+    from motionbricks_blender import soma_rig
+    arm = soma_rig.build_armature(skeleton(), name, (1, 1, 1))
+    action = soma_rig.write_action(arm, walk_frames(), name + "_walk")
+    return arm, action
+
+
+def action_signature(action):
+    from motionbricks_blender import rig_transfer as rt
+    out = []
+    for fc in rt.action_fcurves(action) or []:
+        out.append((fc.data_path, fc.array_index, tuple(round(k.co[1], 6) for k in fc.keyframe_points)))
+    return sorted(out)
