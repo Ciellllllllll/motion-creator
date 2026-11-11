@@ -1,0 +1,125 @@
+{
+ "items": [
+  {
+   "id": "base",
+   "name": "基本姿勢",
+   "file": "stand.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": true,
+   "prompt": "A person stands still in a relaxed neutral pose with arms at their sides.",
+   "seed": 11,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "stand",
+   "name": "立ち",
+   "file": "stand.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": false,
+   "prompt": "A person stands still in a relaxed neutral pose with arms at their sides.",
+   "seed": 11,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "walk",
+   "name": "歩き",
+   "file": "walk.bvh",
+   "duration": 4.9667,
+   "default_time": 2.5,
+   "static": false,
+   "prompt": "A person walks forward at a normal pace.",
+   "seed": 12,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "jog",
+   "name": "小走り",
+   "file": "jog.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": false,
+   "prompt": "A person jogs forward at a light pace.",
+   "seed": 13,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "run",
+   "name": "走り",
+   "file": "run.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": false,
+   "prompt": "A person runs forward fast.",
+   "seed": 14,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "crouch",
+   "name": "しゃがみ",
+   "file": "crouch.bvh",
+   "duration": 3.9667,
+   "default_time": 3.0,
+   "static": false,
+   "prompt": "A person crouches down low and stays crouched.",
+   "seed": 15,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "crouch_walk",
+   "name": "しゃがみ歩き",
+   "file": "crouch_walk.bvh",
+   "duration": 4.9667,
+   "default_time": 2.5,
+   "static": false,
+   "prompt": "A person walks forward while crouching low.",
+   "seed": 16,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "jump",
+   "name": "ジャンプ",
+   "file": "jump.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": false,
+   "prompt": "A person jumps straight up in place and lands.",
+   "seed": 17,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "sit",
+   "name": "座る",
+   "file": "sit.bvh",
+   "duration": 4.9667,
+   "default_time": 4.0,
+   "static": false,
+   "prompt": "A person sits down on a chair and stays seated.",
+   "seed": 18,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "wave",
+   "name": "手を振る",
+   "file": "wave.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": false,
+   "prompt": "A person stands and waves with the right hand.",
+   "seed": 19,
+   "model": "Kimodo-SOMA-RP-v1"
+  },
+  {
+   "id": "turn",
+   "name": "振り返る",
+   "file": "turn.bvh",
+   "duration": 3.9667,
+   "default_time": 2.0,
+   "static": false,
+   "prompt": "A person standing turns around to face the opposite direction.",
+   "seed": 20,
+   "model": "Kimodo-SOMA-RP-v1"
+  }
+ ]
+}

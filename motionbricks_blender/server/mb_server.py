@@ -146,7 +146,7 @@ class Engine:
         rx, ry = rp[0] - lp[0], rp[1] - lp[1]
         return math.atan2(rx, -ry)   # forward = up × right = (-ry, rx)
 
-    def sample(self, name, time_s, anchor, placement):
+    def sample(self, name, time_s, anchor, placement, static=False):
         wp, np = self.wp, self.np
         clip = self._clip(name)
         if anchor not in (0, 3):
@@ -161,6 +161,8 @@ class Engine:
             poses = wp.empty((POSES_PER_TOKEN, len(self.names)), dtype=wp.transform, device=self.engine.device)
 
             def t_of(i):
+                if static:   # 静止ポーズ：4 ポーズとも同じ姿勢（速度ゼロ）
+                    return min(max(time_s, 0.0), duration)
                 return min(max(time_s + (i - anchor) / SAMPLE_RATE, 0.0), duration)
 
             clip.sample(t_of(anchor), poses[anchor], root_offset=self.to_rt, stream=self.stream)
@@ -278,7 +280,8 @@ def serve(port: int, library: Path, cache_dir: Path) -> None:
                 reply = {"world": engine.fk(request.get("pose"))}
             elif cmd == "sample":
                 reply = engine.sample(request.get("clip"), request.get("time", 0.0),
-                                      request.get("anchor", 0), request.get("placement", [0, 0, 0]))
+                                      request.get("anchor", 0), request.get("placement", [0, 0, 0]),
+                                      bool(request.get("static", False)))
             elif cmd == "generate":
                 reply = engine.generate(request.get("context"), request.get("targets"),
                                         request.get("token_counts"))

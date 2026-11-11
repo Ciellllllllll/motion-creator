@@ -38,9 +38,9 @@ class Client:
         r = self._call({"cmd": "skeleton"})
         return {k: r[k] for k in ("joint_names", "parents", "rest", "model_joints")}
 
-    def sample(self, clip: str, time_s: float, anchor: int, placement) -> list:
+    def sample(self, clip: str, time_s: float, anchor: int, placement, static: bool = False) -> list:
         return self._call({"cmd": "sample", "clip": clip, "time": time_s, "anchor": anchor,
-                           "placement": list(placement)})["poses"]
+                           "placement": list(placement), "static": bool(static)})["poses"]
 
     def generate(self, context, targets, token_counts) -> dict:
         r = self._call({"cmd": "generate", "context": context, "targets": targets,
