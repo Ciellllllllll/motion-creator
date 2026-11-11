@@ -176,9 +176,10 @@ class Engine:
             for i in range(POSES_PER_TOKEN):
                 clip.sample(t_of(i), poses[i], root_offset=offset, stream=self.stream)
             wp.synchronize_stream(self.stream)
-            out = poses.numpy()
+            out = poses.numpy().copy()
         if not np.isfinite(out).all():
             raise Refuse("ポーズを取得できませんでした")
+        out[:, 1:, :3] = self.rest[1:, :3]   # 骨の長さは MotionBricks の骨格にそろえる
         return {"poses": self._round(out), "duration": duration}
 
     def generate(self, context, targets, token_counts):
@@ -211,6 +212,7 @@ class Engine:
                 con = self.output.foot_contacts[:played].numpy().copy()
                 if not np.isfinite(out).all():
                     raise Refuse("生成に失敗しました")
+                out[:, 1:, :3] = self.rest[1:, :3]
                 skip = 1 if frames else 0   # 2 区間目以降の先頭は前の区間の最後と同じ
                 start = len(frames)
                 frames.extend(out[skip:])

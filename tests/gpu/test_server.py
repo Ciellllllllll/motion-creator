@@ -78,7 +78,18 @@ def test_fk_matches_rest_height(server, skel):
     w = server.fk(skel["rest"])
     names = skel["joint_names"]
     assert w[names.index("Head")][2] > 1.5 and w[names.index("LeftToeEnd")][2] < 0.05
-    (DATA / "fk_expected.json").write_text(json.dumps({"pose": skel["rest"], "world": w}), encoding="utf-8")
+    # Blender 側のテスト用データ
+    cases = [{"pose": skel["rest"], "world": w}]
+    for clip, t, place in (("walk.bvh", 2.5, [1.0, 2.0, 0.7]), ("crouch.bvh", 3.0, [0, 0, -2.0]),
+                           ("wave.bvh", 2.0, [-1.0, 0.5, 3.0])):
+        pose = server.sample(clip, t, 0, place)[0]
+        cases.append({"pose": pose, "world": server.fk(pose)})
+    (DATA / "fk_expected.json").write_text(json.dumps({"cases": cases}), encoding="utf-8")
+    ctx = server.sample("walk.bvh", 1.0, 3, [0, 0, -math.pi / 2])
+    tgt = server.sample("walk.bvh", 3.0, 0, [0, -1.8, -math.pi / 2])
+    r = server.generate(ctx, [{"poses": tgt, "use": 4, "early": 0}], None)
+    (DATA / "walk_frames.json").write_text(json.dumps({"frames": r["frames"], "contacts": r["contacts"]}),
+                                           encoding="utf-8")
 
 
 def test_server_survives_bad_request(server):
