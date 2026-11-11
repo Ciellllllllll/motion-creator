@@ -177,6 +177,7 @@ class MBPoseEntry(bpy.types.PropertyGroup):
 class MBSceneState(bpy.types.PropertyGroup):
     poses: CollectionProperty(type=MBPoseEntry)
     index: IntProperty(update=_on_index_changed)
+    edit_index: IntProperty(default=-1)
     skeleton: StringProperty()
     server_port: IntProperty()
     status: EnumProperty(items=[('STOPPED', "停止", ""), ('INSTALLING', "準備中", ""), ('STARTING', "起動中", ""),

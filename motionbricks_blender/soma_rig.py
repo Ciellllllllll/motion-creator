@@ -159,10 +159,10 @@ def apply_pose(arm, pose, local: bool = False) -> None:
         pb.scale = (1, 1, 1)
 
 
-def read_pose(arm) -> list:
-    """現在のポーズ（評価済み）をポーズ配列で返す。"""
+def read_pose(arm, local: bool = False) -> list:
+    """現在のポーズ（評価済み）をポーズ配列で返す。*local* が真ならアーマチュアのローカル座標。"""
     info = _info(arm)
-    mw = arm.matrix_world
+    mw = Matrix.Identity(4) if local else arm.matrix_world
     pbones = arm.pose.bones
     W = [mw @ pbones[n].matrix @ info["C_inv"][i] for i, n in enumerate(info["names"])]
     out = []
