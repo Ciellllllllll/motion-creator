@@ -65,9 +65,7 @@ def run(context, scene):
     warning = ""
     if mb.character_path:
         try:
-            char = export.ensure_character(scene, mb.character_path)
-            mixamo = rt.transfer_action(arm, char, rt.unique_action_name("MB_Mixamo"))
-            foot_lock.lock_action(char, mixamo, reply["contacts"], start=1)
+            export.ensure_character_motion(scene)
             arm.hide_set(True)
         except ValueError as e:        # NotMixamoError を含む。生成そのものは成功
             warning = str(e)
