@@ -12,7 +12,7 @@ from .client import Client, ClientError
 from .setup_env import SetupError
 
 CATEGORY = "MotionBricks"
-_ICONS = {'START': 'SEQUENCE_COLOR_04', 'MIDDLE': 'SEQUENCE_COLOR_02', 'END': 'SEQUENCE_COLOR_05'}
+_icons = {}
 _INSTALL_SHARE = 0.7        # 進み具合のうち、インストールが占める割合
 
 # サーバーは Blender 1 つにつき 1 つ。ファイルを開き直しても動かしたままにする。
@@ -204,9 +204,20 @@ def draw_main(layout, context):
     _big(layout, 1.8).operator("mb.start", text="MotionBricksを起動", icon='PLAY')
 
 
+def kind_icons() -> dict:
+    """一覧の色つきアイコン（緑・オレンジ・青）。Blender の版によってアイコン名が違う。"""
+    if not _icons:
+        valid = set(bpy.types.UILayout.bl_rna.functions["label"].parameters["icon"].enum_items.keys())
+        for kind, number, fallback in (('START', "04", 'KEYTYPE_JITTER_VEC'), ('MIDDLE', "02", 'KEYTYPE_EXTREME_VEC'),
+                                       ('END', "05", 'KEYTYPE_BREAKDOWN_VEC')):
+            names = (f"STRIP_COLOR_{number}", f"SEQUENCE_COLOR_{number}", fallback)
+            _icons[kind] = next((n for n in names if n in valid), 'DOT')
+    return _icons
+
+
 class MB_UL_poses(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        layout.label(text=poses.entry_label(data, index), icon=_ICONS[item.kind])
+        layout.label(text=poses.entry_label(data, index), icon=kind_icons()[item.kind])
 
 
 def draw_poses(layout, context):
@@ -251,9 +262,11 @@ def draw_generate(layout, context):
 def draw_export(layout, context):
     mb = context.scene.mb
     layout.row(align=True).prop(mb, "export_mode", expand=True)
-    row = layout.row()
+    col = layout.column(align=True)
+    col.label(text="キャラクター", icon='ARMATURE_DATA')
+    row = col.row()
     row.alert = not mb.character_path
-    row.prop(mb, "character_path", text="キャラクター")
+    row.prop(mb, "character_path", text="")
     layout.prop(mb, "in_place", text="In Place", icon='PINNED', toggle=True)
     _big(layout, 1.8).operator("mb.export", text="Mixamo形式で保存", icon='EXPORT')
 

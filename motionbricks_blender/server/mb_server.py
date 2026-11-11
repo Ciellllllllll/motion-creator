@@ -49,6 +49,31 @@ def watch_parent(pid: int) -> None:
     threading.Thread(target=loop, daemon=True).start()
 
 
+def ascii_safe(path) -> str:
+    """TensorRT は日本語などを含むパスのファイルを開けない。英数字だけのパスに置き換える。
+
+    ProgramData にハードリンク（別ドライブなら複製）を作る。Windows の短い名前（8.3 形式）は、
+    MotionBricks が読み込む前に長い名前へ戻してしまうので使えない。
+    """
+    text = str(path)
+    if text.isascii() or os.name != "nt":
+        return text
+    import shutil
+    base = Path(os.environ.get("PROGRAMDATA", "C:/ProgramData")) / "MotionBricksBlender" / "onnx"
+    if not str(base).isascii():
+        return text
+    base.mkdir(parents=True, exist_ok=True)
+    dest = base / Path(text).name
+    if not dest.exists() or dest.stat().st_size != os.path.getsize(text):
+        if dest.exists():
+            dest.unlink()
+        try:
+            os.link(text, dest)
+        except OSError:
+            shutil.copyfile(text, dest)
+    return str(dest)
+
+
 class Engine:
     """GPU を触る処理はすべてメインスレッドのこのクラスで行う。"""
 
@@ -81,7 +106,7 @@ class Engine:
         rest[0] = np.array(wp.mul(self.to_rt, wp.transform(*rest[0])))
         self.rest = rest
         self.i_left, self.i_right = self.names.index("LeftLeg"), self.names.index("RightLeg")
-        self.engine = MotionBricksSOMAEngine(SOMA_N1_FP32_ONNX_PATH, model_to_runtime=self.to_rt,
+        self.engine = MotionBricksSOMAEngine(ascii_safe(SOMA_N1_FP32_ONNX_PATH), model_to_runtime=self.to_rt,
                                              cache_dir=str(cache_dir), logger_severity="WARNING")
         self.stream = self.engine.stream
         with wp.ScopedStream(self.stream):
@@ -309,7 +334,23 @@ def serve(port: int, library: Path, cache_dir: Path) -> None:
     engine.close()
 
 
+def track_file_access(log_path: str) -> None:
+    """確認用：開いたファイルのうち、MotionBricks のサンプル動きのフォルダにあるものを記録する。"""
+    log = open(log_path, "a", encoding="utf-8")
+
+    def hook(event, args):
+        if event == "open" and args and isinstance(args[0], (str, bytes, os.PathLike)):
+            path = os.fsdecode(args[0]).replace("\\", "/")
+            if "/assets/motions/" in path:
+                log.write(path + "\n")
+                log.flush()
+
+    sys.addaudithook(hook)
+
+
 def main():
+    if os.environ.get("MB_TRACK_ACCESS"):
+        track_file_access(os.environ["MB_TRACK_ACCESS"])
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, required=True)
     parser.add_argument("--parent-pid", type=int, default=0)

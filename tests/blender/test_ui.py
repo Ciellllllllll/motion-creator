@@ -196,3 +196,42 @@ def test_start_reuses_running_server_after_file_load():
     t0 = time.time()
     assert bpy.ops.mb.start() == {'FINISHED'}, mb.error
     assert mb.server_port == port and time.time() - t0 < 5
+
+
+def test_list_icons_exist_in_this_blender():
+    valid = set(bpy.types.UILayout.bl_rna.functions["label"].parameters["icon"].enum_items.keys())
+    assert set(ui.kind_icons().keys()) == {'START', 'MIDDLE', 'END'}
+    assert all(icon in valid for icon in ui.kind_icons().values()), ui.kind_icons()
+    assert len(set(ui.kind_icons().values())) == 3
+
+
+def test_character_label_is_not_squeezed():
+    """「キャラクター」は欄の上に出す（狭いサイドバーで欄と並べると切れる）。"""
+    common.start_fake()
+    layout = Layout()
+    ui.draw_export(layout, bpy.context)
+    i = layout.log.index(("label", "キャラクター"))
+    assert layout.log[i + 1] == ("prop", "", "character_path")
+
+
+def test_overlay_marks_every_visible_puppet():
+    from motionbricks_blender import overlay
+    common.start_fake()
+    mb = bpy.context.scene.mb
+    mb.index = 0
+    bpy.ops.mb.pose_add()
+    mb.poses[1].armature.location = (1.0, -1.0, 0.0)
+    mb.poses[1].armature.rotation_euler.z = 1.5707963
+    mb.index = 0
+    marks = overlay.marks(bpy.context.scene)
+    assert [m["label"] for m in marks] == ["最初", "途中 1", "最後"]
+    assert [m["color"] for m in marks] == [poses.COLORS['START'], poses.COLORS['MIDDLE'], poses.COLORS['END']]
+    mid = marks[1]
+    assert abs(mid["center"][0] - 1.0) < 1e-6 and abs(mid["center"][1] + 1.0) < 1e-6
+    # 人形は自分の -Y を向く。90 度回すと +X 向き
+    assert abs(mid["facing"][0] - 1.0) < 1e-4 and abs(mid["facing"][1]) < 1e-4
+    assert mid["selected"] is False and marks[0]["selected"] is True and len(mid["ring"]) >= 24
+    mb.index = 1
+    assert overlay.marks(bpy.context.scene)[1]["selected"] is True
+    mb.poses[2].armature.hide_set(True)
+    assert [m["label"] for m in overlay.marks(bpy.context.scene)] == ["最初", "途中 1"]

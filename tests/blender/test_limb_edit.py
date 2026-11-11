@@ -166,3 +166,16 @@ def test_switching_pose_ends_edit():
     _move(arm, "MB_左手", (0.0, 0.0, 0.2))
     limb_edit.finish_if_active(bpy.context.scene)
     assert mb.edit_index == -1 and entry.edited and len(arm.data.bones) == 77
+
+
+def test_handles_are_easy_to_see():
+    mb, entry, arm, before = _begin("walk")
+    for handle, pole, *_ in limb_edit.LIMBS:
+        for name, size in ((handle, 0.05), (pole, 0.03)):
+            pb = arm.pose.bones[name]
+            assert pb.custom_shape is not None and pb.custom_shape.type == 'MESH'
+            assert pb.use_custom_shape_bone_size is False
+            assert min(pb.custom_shape_scale_xyz) >= size                 # 画面でつかめる大きさ
+    shapes = {arm.pose.bones[n].custom_shape.name for n in limb_edit.HANDLE_NAMES}
+    assert len(shapes) == 2                                               # 手足用と向き用で形を変える
+    assert all(bpy.data.objects[s].users_collection == () for s in shapes)   # シーンには出さない

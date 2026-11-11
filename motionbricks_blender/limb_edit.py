@@ -58,6 +58,34 @@ def _set_color(bone, color):
         pass
 
 
+HANDLE_SHAPE, POLE_SHAPE = "MB_ハンドル形", "MB_目印形"
+HANDLE_SIZE, POLE_SIZE = 0.065, 0.04
+
+
+def _shape(name):
+    """ハンドルの見た目（線だけのメッシュ）。シーンには出さず、ボーンの形としてだけ使う。"""
+    obj = bpy.data.objects.get(name)
+    if obj is not None and obj.type == 'MESH':
+        return obj
+    verts, edges = [], []
+    if name == HANDLE_SHAPE:        # 3 方向の輪でできた球
+        n = 20
+        for axis in range(3):
+            start = len(verts)
+            for k in range(n):
+                a = 2 * math.pi * k / n
+                p = [0.0, 0.0, 0.0]
+                p[(axis + 1) % 3], p[(axis + 2) % 3] = math.cos(a), math.sin(a)
+                verts.append(tuple(p))
+                edges.append((start + k, start + (k + 1) % n))
+    else:                           # ひし形
+        verts = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
+        edges = [(a, b) for a in range(6) for b in range(a + 1, 6) if a // 2 != b // 2]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, edges, [])
+    return bpy.data.objects.new(name, mesh)
+
+
 def _add_handles(arm):
     pb = arm.pose.bones
     fwd = _forward(pb)
@@ -76,6 +104,15 @@ def _add_handles(arm):
     for handle, pole, *_ in LIMBS:
         _set_color(arm.data.bones[handle], HANDLE_COLOR)
         _set_color(arm.data.bones[pole], POLE_COLOR)
+        for name, shape, size in ((handle, HANDLE_SHAPE, HANDLE_SIZE), (pole, POLE_SHAPE, POLE_SIZE)):
+            pbone = arm.pose.bones[name]
+            pbone.custom_shape = _shape(shape)
+            pbone.use_custom_shape_bone_size = False
+            pbone.custom_shape_scale_xyz = (size, size, size)
+            try:
+                pbone.custom_shape_wire_width = 2.5
+            except AttributeError:
+                pass
         for name in (handle, pole):
             arm.pose.bones[name].lock_rotation = (True, True, True)
             arm.pose.bones[name].lock_rotation_w = True
