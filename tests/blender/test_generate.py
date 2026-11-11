@@ -211,3 +211,26 @@ def test_contact_intervals():
     got = foot_lock.contact_intervals(rows, start=1)
     assert got["L"] == [[1, 11]]                  # 2 フレームの切れ目はつなぐ
     assert got["R"] == []                         # 3 フレーム未満の接地は捨てる
+
+
+def test_survives_user_deleting_objects():
+    """人形や結果の骨格を 3D ビューで消されても、次の生成で作り直して続けられる。"""
+    common.start_real()
+    mb = _mb()
+    scene = bpy.context.scene
+    assert bpy.ops.mb.generate() == {'FINISHED'}, mb.error
+    # 1) アウトライナーから外しただけ（データは残る） 2) 完全に削除
+    end_arm = mb.poses[1].armature
+    for coll in list(end_arm.users_collection):
+        coll.objects.unlink(end_arm)
+    bpy.data.objects.remove(mb.poses[0].armature, do_unlink=True)
+    result = generate.result_armature(scene)
+    for coll in list(result.users_collection):
+        coll.objects.unlink(result)
+    assert bpy.ops.mb.generate() == {'FINISHED'}, mb.error
+    assert all(e.armature is not None and e.armature.name in scene.objects for e in mb.poses)
+    assert generate.result_armature(scene).name in scene.objects
+    assert (Vector(poses.entry_window(mb.poses[1])[0][0][:2]) - Vector((0, -2))).length < 0.05   # 置いた場所は保つ
+    mb.index = 0
+    assert bpy.ops.mb.limb_edit_begin() == {'FINISHED'}
+    assert bpy.ops.mb.limb_edit_end() == {'FINISHED'}

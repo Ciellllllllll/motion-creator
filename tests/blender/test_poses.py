@@ -142,3 +142,12 @@ def test_persist_after_reload():
     # 起動し直しても並べたポーズはそのまま
     common.start_fake()
     assert len(_mb().poses) == 3
+
+
+def test_add_after_user_deleted_a_puppet():
+    common.start_fake()
+    mb = _mb()
+    bpy.data.objects.remove(mb.poses[1].armature, do_unlink=True)
+    mb.index = 0
+    assert bpy.ops.mb.pose_add() == {'FINISHED'}
+    assert len(mb.poses) == 3 and all(e.armature is not None for e in mb.poses)

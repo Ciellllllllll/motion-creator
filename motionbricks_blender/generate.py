@@ -17,6 +17,8 @@ FPS = 30
 def result_armature(scene, create=False):
     arm = bpy.data.objects.get(RESULT_NAME)
     if arm is not None and arm.type == 'ARMATURE' and soma_rig.SKEL_KEY in arm:
+        if create and arm.name not in scene.objects:      # シーンから外されていたら戻す
+            scene.collection.objects.link(arm)
         return arm
     if not create:
         return None
@@ -38,6 +40,7 @@ def run(context, scene):
     """いまのポーズから動きを生成して表示する。失敗は ClientError / ValueError。"""
     mb = scene.mb
     limb_edit.finish_if_active(scene)
+    poses.ensure_puppets(scene)
     client = poses.get_client(scene)
     if client is None:
         raise ClientError("MotionBricksを起動してください")

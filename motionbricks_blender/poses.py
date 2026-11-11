@@ -259,6 +259,24 @@ def _add_entry(scene, kind, library_id, time, location, rot_z):
     return entry
 
 
+def ensure_puppets(scene):
+    """人形が消されていたら作り直す（シーンから外されただけなら戻す）。"""
+    mb = scene.mb
+    if not mb.skeleton:
+        return
+    coll = pose_collection(scene)
+    for i, entry in enumerate(mb.poses):
+        arm = entry.armature
+        if arm is not None and arm.name not in scene.objects:
+            coll.objects.link(arm)
+        elif arm is None:
+            prev = mb.poses[i - 1].armature if i > 0 else None
+            loc = (prev.location.x, prev.location.y - 1.5) if prev is not None else (0.0, 0.0)
+            _make_puppet(scene, entry, loc, prev.rotation_euler.z if prev is not None else 0.0)
+            show_entry(entry)
+    _rename(mb)
+
+
 def on_server_started(scene, skel):
     """起動直後：骨格を覚え、ポーズが無ければ最初と最後を作る。"""
     mb = scene.mb
@@ -269,9 +287,8 @@ def on_server_started(scene, skel):
         _add_entry(scene, 'START', "stand", None, (0.0, 0.0), 0.0)
         _add_entry(scene, 'END', "stand", None, (0.0, -2.0), 0.0)
         mb.index = 0
+    ensure_puppets(scene)
     for entry in mb.poses:
-        if entry.armature is None:
-            _make_puppet(scene, entry, (0.0, 0.0), 0.0)
         if not entry.window:
             refresh_pose(entry)
         else:
@@ -290,6 +307,7 @@ class MB_OT_pose_add(bpy.types.Operator):
 
     def execute(self, context):
         scene, mb = context.scene, context.scene.mb
+        ensure_puppets(scene)
         sel = min(max(mb.index, 0), len(mb.poses) - 1)
         pos = sel if mb.poses[sel].kind == 'END' else sel + 1
         prev_arm, next_arm = mb.poses[pos - 1].armature, mb.poses[pos].armature

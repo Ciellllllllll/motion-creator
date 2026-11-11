@@ -272,6 +272,7 @@ class MB_OT_limb_edit_begin(bpy.types.Operator):
 
     def execute(self, context):
         mb = context.scene.mb
+        poses.ensure_puppets(context.scene)
         entry = mb.poses[mb.index]
         arm = entry.armature
         _activate(context, arm)
