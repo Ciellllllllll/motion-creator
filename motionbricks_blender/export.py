@@ -115,11 +115,24 @@ def ensure_character_motion(scene):
     char = ensure_character(scene, mb.character_path)
     current = char.animation_data.action if char.animation_data else None
     if current is not None and current.get(RESULT_KEY) == result.name:
+        generate.sync_playback_in_place(scene)
         return char, current
     rt.bind_action(source, result)
-    action = rt.transfer_action(source, char, rt.unique_action_name("MB_Mixamo"))
-    foot_lock.lock_action(char, action, json.loads(result["mb_contacts"]), start=int(result.frame_range[0]))
+    # 接地補正は移動を含む動きで計算し、再生用の In Place は転送後に反映する。
+    was_in_place = rt.is_in_place(source)
+    ok, message = rt.remove_in_place(source)
+    if not ok:
+        raise ValueError(f"元の移動を復元できません: {message}")
+    try:
+        action = rt.transfer_action(source, char, rt.unique_action_name("MB_Mixamo"))
+        foot_lock.lock_action(char, action, json.loads(result["mb_contacts"]), start=int(result.frame_range[0]))
+    finally:
+        if was_in_place:
+            ok, message = rt.apply_in_place(source)
+            if not ok:
+                raise ValueError(f"In Placeを復元できません: {message}")
     action[RESULT_KEY] = result.name
+    generate.sync_playback_in_place(scene)
     return char, action
 
 
@@ -166,6 +179,9 @@ def export_fbx(context, scene, filepath: str):
     temp.name = "MB_書き出し"
     try:
         rt.bind_action(char, temp)
+        ok, message = rt.remove_in_place(char)
+        if not ok:
+            raise ValueError(f"元の移動を復元できません: {message}")
         _normalise_start(scene, char, temp, frames)
         if mb.in_place:
             ok, message = rt.apply_in_place(char)
