@@ -1,71 +1,47 @@
 # MotionBricks for Blender
 
-ポーズを置いて、その間の動きを NVIDIA MotionBricks に作らせ、Mixamo 形式の FBX として保存する Blender アドオンです。操作はすべて Blender のサイドバー（N キー）の「MotionBricks」タブで行います。
+キャラクターの最初と最後の姿勢を指定すると、その間の動きを自動で作るBlender用の追加機能です。作った動きは、Mixamoのキャラクターに適用し、FBXファイルとして保存できます。
 
 ## 必要なもの
 
-- Windows、Blender 4.2 以降（5.0 で確認）
-- NVIDIA の GPU（RTX 5080 で確認）
-- Git、Git LFS、uv（PATH から実行できること）
-- Mixamo の骨格を持つキャラクターの FBX（`mixamorig:Hips` などのボーン名）
+- WindowsとBlender 4.2以降
+- NVIDIA製のGPU
+- Git、Git LFS、uvをコマンドから実行できる環境
+- Mixamo形式の骨格を持つキャラクターのFBXファイル
+
+Blender 5.0とRTX 5080で動作を確認しています。
 
 ## インストール
 
-```
+このフォルダで、次のコマンドを実行します。
+
+```sh
 blender -b --python tools/install_addon.py
 ```
 
-Blender のユーザー拡張機能フォルダへコピーして有効にします。
-
 ## 使い方
 
-1. **MotionBricksを起動** を押します。
-   - 初回だけ、MotionBricks 本体とモデルの取得、環境の準備を自動で行います（約 5 分、約 3 GB）。2 回目以降は数秒です。
-2. **ポーズ** を決めます。3D ビューに「最初」（緑）と「最後」（青）の人形が出ます。
-   - 人形をドラッグ（G）・回転（R → Z）すると、位置と向きが変わります。足元の矢印が正面です。
-   - 一覧の ＋ で「途中」（オレンジ）を追加、－ で削除、▲▼ で順番を入れ替えます。
-   - **ポーズ集** で姿勢の元になる動きを選び、**タイミング** でその動きのどの瞬間を使うかを選びます。
-   - **手足を編集** を押すと、手首・足首の白い球と、ひじ・ひざの向きを決める黄色い目印が出ます。つかんで動かす（G）と手足がついてきます。腰や胸、頭は回転（R）で動かせます。終わったら **編集を終える** を押します。**元に戻す** で編集を取り消します。
-3. **生成** を押します。最初から最後までをつなぐ動きができ、再生が始まります。
-   - **もう一度** で、同じポーズから長さの違う別の動きを作ります。
-4. **書き出し** で保存します。
-   - **キャラクター** に Mixamo のキャラクター FBX を指定します。指定すると、生成した動きがそのキャラクターで再生されます。
-   - **キャラに焼き込み**：メッシュ付きの FBX。**動きのみ**：骨格だけの FBX。
-   - **In Place**：生成結果とキャラクターの腰の水平移動を止め、その場で再生・書き出しします。生成前でも生成後でも切り替えられ、オフにすると元の移動に戻ります。上下動と回転は変わりません。
-   - **Mixamo形式で保存** を押して保存先を選びます。
+Blenderの3D画面でNキーを押し、「MotionBricks」タブを開きます。
 
-## 書き出される FBX
+1. 「MotionBricksを起動」を押します。初回の準備には約5分かかり、約3GBのファイルを取得します。
+2. 最初と最後の人形を動かし、位置や向き、姿勢を決めます。途中の姿勢も追加できます。
+3. 「生成」を押すと、姿勢をつなぐ動きが作られ、再生されます。
+4. 「キャラクター」にFBXファイルを指定し、「Mixamo形式で保存」で保存します。
 
-- 30 fps、0 秒から始まります。
-- 最初のフレームで腰が原点にあり、最初のポーズの正面が前（Blender の -Y、FBX の +Z）を向きます。
-- 指は Mixamo キャラクターの基本姿勢のままです（MotionBricks は指を生成しません）。
-- 接地中の足が滑らないように、脚を自動で補正しています。
-- キャラクターの元の FBX と、Blender 内の既存のアクションは変更しません。
+姿勢は「ポーズ集」から選べます。「手足を編集」では、画面上の目印を動かして姿勢を調整できます。
 
-## ポーズ集とライセンス
+保存時は、キャラクターごと保存するか、動きだけを保存するかを選べます。「In Place」を有効にすると、水平方向に移動せず、その場で動くようになります。
 
-- ポーズ集（`motionbricks_blender/library/`）は、**NVIDIA Kimodo（Kimodo-SOMA-RP-v1）で生成した動き**です。プロンプトとシードは `index.json` に記録しています。作り直すには `python tools/build_library.py` を実行します（Kimodo の環境が必要）。
-- **MotionBricks に同梱されているサンプル動き（`assets/motions/`）は使っていません。** これらは評価・テスト専用のライセンス（NVIDIA Sample Data Evaluation License）で、製品に使えないためです。このアドオンはサンプル動きの実体をダウンロードせず、サーバーもポーズ集以外のファイルを読み込みません。
-- MotionBricks のモデルは NVIDIA Open Model Agreement、Kimodo のモデルは NVIDIA Open Model License です（どちらも商用利用可と記載されています）。利用の前に、各ライセンスの本文を確認してください。
+## 保存する動きについて
 
-## 保存される場所
+毎秒30フレームで、0秒から始まる動きとして保存します。指の動きは生成されません。元のキャラクターファイルは変更しません。
 
-- MotionBricks 本体と環境：`%LOCALAPPDATA%\MotionBricksBlender\`（約 3 GB）。削除すると次回の起動時に取得し直します。
-- ユーザー名などに日本語が含まれる場合は、モデルファイルへのリンクを `C:\ProgramData\MotionBricksBlender\onnx\` に作ります（TensorRT が日本語を含むパスを開けないため）。
+## 使用するモデルとデータ
 
-## うまくいかないとき
+動きの生成にはNVIDIA MotionBricksを使います。ポーズ集はNVIDIA Kimodoで生成したもので、MotionBricksに付属する評価・テスト専用のサンプル動作は使っていません。
 
-- 起動に失敗したら、もう一度 **MotionBricksを起動** を押してください。途中まで済んだ準備は飛ばして続きから進みます。
-- サーバーの記録は `%LOCALAPPDATA%\MotionBricksBlender\server.log` にあります。
-- 遠くに置いたポーズへは、間に歩きの中間目標を自動で足してつなぎます（2 m ごと）。
+利用前に、MotionBricksのNVIDIA Open Model Agreementと、KimodoのNVIDIA Open Model Licenseを確認してください。
 
-## 開発
+## 起動できないとき
 
-```
-uv run pytest                      # 純 Python のテスト
-uv run pytest tests/gpu            # サーバーのテスト（GPU、MotionBricks のインストールが必要）
-bash tests/bl.sh test_poses        # Blender 内のテスト（test_soma_rig / test_rig_transfer / test_poses /
-                                   #   test_limb_edit / test_generate / test_export / test_ui / test_acceptance）
-```
-
-`tests/data/player_mixamo_repaired.fbx` にテスト用の Mixamo キャラクターを置いてください（リポジトリには含めません）。
+「MotionBricksを起動」をもう一度押すと、準備の続きから再開します。詳しい記録は`%LOCALAPPDATA%\MotionBricksBlender\server.log`にあります。
