@@ -9,7 +9,13 @@
    "static": true,
    "prompt": "A person stands still in a relaxed neutral pose with arms at their sides.",
    "seed": 11,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "stand",
@@ -20,7 +26,13 @@
    "static": false,
    "prompt": "A person stands still in a relaxed neutral pose with arms at their sides.",
    "seed": 11,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "walk",
@@ -31,7 +43,13 @@
    "static": false,
    "prompt": "A person walks forward at a normal pace.",
    "seed": 12,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "jog",
@@ -42,7 +60,13 @@
    "static": false,
    "prompt": "A person jogs forward at a light pace.",
    "seed": 13,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "run",
@@ -53,7 +77,13 @@
    "static": false,
    "prompt": "A person runs forward fast.",
    "seed": 14,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "crouch",
@@ -64,7 +94,13 @@
    "static": false,
    "prompt": "A person crouches down low and stays crouched.",
    "seed": 15,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "crouch_walk",
@@ -75,7 +111,13 @@
    "static": false,
    "prompt": "A person walks forward while crouching low.",
    "seed": 16,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "jump",
@@ -86,7 +128,13 @@
    "static": false,
    "prompt": "A person jumps straight up in place and lands.",
    "seed": 17,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "sit",
@@ -97,7 +145,13 @@
    "static": false,
    "prompt": "A person sits down on a chair and stays seated.",
    "seed": 18,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "wave",
@@ -108,7 +162,13 @@
    "static": false,
    "prompt": "A person stands and waves with the right hand.",
    "seed": 19,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   },
   {
    "id": "turn",
@@ -119,7 +179,13 @@
    "static": false,
    "prompt": "A person standing turns around to face the opposite direction.",
    "seed": 20,
-   "model": "Kimodo-SOMA-RP-v1"
+   "model": "Kimodo-SOMA-RP-v1",
+   "text_encoder": {
+    "name": "Llama-3-LLM2Vec-Kimodo-NF4-local-v1",
+    "model_dir": "D:\\ModelBuild\\llm2vec-nf4\\Llama-3-LLM2Vec-Kimodo-NF4-local-v1\\model",
+    "model_safetensors_sha256": "d733ab8d06cc6e09502847c32e5e185fc5f3d925f4a9333e141c8f93166a6caf",
+    "build_manifest_created_at": "2026-11-12T13:39:49+09:00"
+   }
   }
  ]
 }
