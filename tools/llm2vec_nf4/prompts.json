@@ -1,0 +1,40 @@
+{
+ "library": [
+  "A person stands still in a relaxed neutral pose with arms at their sides.",
+  "A person walks forward at a normal pace.",
+  "A person jogs forward at a light pace.",
+  "A person runs forward fast.",
+  "A person crouches down low and stays crouched.",
+  "A person walks forward while crouching low.",
+  "A person jumps straight up in place and lands.",
+  "A person sits down on a chair and stays seated.",
+  "A person stands and waves with the right hand.",
+  "A person standing turns around to face the opposite direction."
+ ],
+ "extra": [
+  "A person walks backward slowly.",
+  "A person walks to the left.",
+  "A person sidesteps to the right.",
+  "A person turns left and then walks forward.",
+  "A person turns right ninety degrees.",
+  "A person walks in a circle clockwise.",
+  "A person walks very slowly, almost shuffling.",
+  "A person sprints as fast as possible.",
+  "A person walks quickly and then slows down to a stop.",
+  "A person jogs and gradually speeds up into a run.",
+  "A person stands still and does not move their arms.",
+  "A person walks forward without swinging their arms.",
+  "A person waves with the left hand, not the right hand.",
+  "A person sits down but does not lean back.",
+  "A person walks forward, stops, and then waves.",
+  "A person crouches, then jumps forward.",
+  "A person runs, jumps over an obstacle, and keeps running.",
+  "A person sits down, stands up, and walks away.",
+  "A person picks up an object from the floor with both hands.",
+  "A person kicks with the right leg.",
+  "A person punches forward with the left fist.",
+  "A person stretches both arms above their head.",
+  "A person limps forward favoring the left leg.",
+  "A person looks over their right shoulder while walking."
+ ]
+}
