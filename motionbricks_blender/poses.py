@@ -177,6 +177,14 @@ def _on_index_changed(self, context):
         pass
 
 
+def _on_in_place_changed(self, context):
+    from . import generate
+    try:
+        generate.sync_playback_in_place(self.id_data)
+    except ValueError as e:
+        self.error = str(e)
+
+
 class MBPoseEntry(bpy.types.PropertyGroup):
     kind: EnumProperty(items=[('START', "最初", ""), ('MIDDLE', "途中", ""), ('END', "最後", "")])
     library_id: EnumProperty(name="ポーズ集", items=_ENUM_ITEMS, update=_on_library_changed)
@@ -200,7 +208,8 @@ class MBSceneState(bpy.types.PropertyGroup):
     busy: BoolProperty()
     character_path: StringProperty(name="キャラクター", subtype='FILE_PATH')
     export_mode: EnumProperty(items=[('BAKE', "キャラに焼き込み", ""), ('MOTION', "動きのみ", "")], default='BAKE')
-    in_place: BoolProperty(name="In Place")
+    in_place: BoolProperty(name="In Place", update=_on_in_place_changed,
+                           description="水平移動を止めてその場で再生・書き出しする。上下動と回転は保持する")
     variant: IntProperty()
     result_action: PointerProperty(type=bpy.types.Action)
 

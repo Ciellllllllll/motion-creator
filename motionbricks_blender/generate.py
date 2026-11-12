@@ -32,6 +32,25 @@ def character_armature(scene):
     return export.character_armature(scene)
 
 
+def sync_playback_in_place(scene):
+    """生成結果と、その結果を転送したキャラクターに再生設定を反映する。"""
+    result = scene.mb.result_action
+    if result is None:
+        return
+    source = result_armature(scene)
+    char = character_armature(scene)
+    for arm in (source, char):
+        action = arm.animation_data.action if arm and arm.animation_data else None
+        if action is None or not (action == result or action.get(export.RESULT_KEY) == result.name):
+            continue
+        ok, message = rt.sync_in_place(arm, scene.mb.in_place)
+        if not ok:
+            raise ValueError(f"In Placeを切り替えられません: {message}")
+        action.update_tag()
+        arm.update_tag()
+    scene.frame_set(scene.frame_current, subframe=scene.frame_subframe)
+
+
 def _is_connection_error(message):
     return "接続" in message or "応答" in message
 
@@ -73,6 +92,7 @@ def run(context, scene):
         except ValueError as e:        # NotMixamoError を含む。生成そのものは成功
             warning = str(e)
 
+    sync_playback_in_place(scene)
     for entry in entries:
         if entry.armature is not None:
             entry.armature.hide_set(True)
