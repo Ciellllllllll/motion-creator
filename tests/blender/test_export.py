@@ -144,12 +144,12 @@ def test_source_untouched():
     char = generate.character_armature(scene)
     src = str(common.character_path())
     stamp = (os.path.getmtime(src), os.path.getsize(src))
+    mb.in_place = True
     result_sig = common.action_signature(mb.result_action)
     char_action = char.animation_data.action
     char_sig = common.action_signature(char_action)
     n_actions = len(bpy.data.actions)
     selected = [o.name for o in bpy.context.view_layer.objects if o.select_get()]
-    mb.in_place = True
     assert bpy.ops.mb.export(filepath=_out()) == {'FINISHED'}, mb.error
     assert (os.path.getmtime(src), os.path.getsize(src)) == stamp
     assert common.action_signature(mb.result_action) == result_sig
